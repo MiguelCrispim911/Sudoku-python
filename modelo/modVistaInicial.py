@@ -1,13 +1,13 @@
 import os
 
 class ModVistaInicial:
-    def __init__(self, matrizJuego, deshacer, rehacer, jugadas):
+
+    def __init__(self, matrizJuego, deshacer, rehacer, jugadas, posibilidades):
         self.matrizJuego = matrizJuego
         self.deshacer = deshacer
         self.rehacer = rehacer
         self.jugadas = jugadas
-        # Inicializar el diccionario de posibilidades para cada celda
-        self.posibilidades = {(i, j): list(range(1, 10)) for i in range(9) for j in range(9)}
+        self.posibilidades = posibilidades
 
     def validar_archivo_txt(self, archivo):
         if not os.path.isfile(archivo):

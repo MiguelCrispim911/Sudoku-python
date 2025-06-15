@@ -15,12 +15,12 @@ class Lista:
             self.head.set_prev(x)
         self.head = x
     
-    # def search(self, k):
-    #     x = self.head
-    #     while x is not None and x.get_key() != k:
-    #         x = x.get_next()
-    #     return x
-    # No es necesario buscar nodos!!!!!!!!!!
+    def search(self, k):
+         x = self.head
+         while x is not None and x.get_key() != k:
+             x = x.get_next()
+         return x
+    
     
     def delete(self, x):
         if x.get_next() is not None:

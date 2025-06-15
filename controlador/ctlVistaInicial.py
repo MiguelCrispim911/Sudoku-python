@@ -3,9 +3,9 @@ from tkinter import messagebox, filedialog
 from modelo.modVistaInicial import ModVistaInicial
 
 class CtlVistaInicial:
-    def __init__(self, vista, matrizJuego, deshacer, rehacer, jugadas):
+    def __init__(self, vista, matrizJuego, deshacer, rehacer, jugadas, posibilidades):
         self.vista = vista
-        self.modelo = ModVistaInicial(matrizJuego, deshacer, rehacer, jugadas)
+        self.modelo = ModVistaInicial(matrizJuego, deshacer, rehacer, jugadas, posibilidades)
         self.archivo_seleccionado = None
 
     def seleccionar_archivo(self):

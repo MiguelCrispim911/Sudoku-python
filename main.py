@@ -1,6 +1,6 @@
 from vista.vistaInicial import VistaInicial
 from estructuras.Lista import Lista
-from estructuras.Pila import Pila
+
 
 if __name__ == "__main__":
     # Inicialización de estructuras
@@ -14,7 +14,7 @@ if __name__ == "__main__":
     jugadas = Lista()
 
     # Pila para rehacer (tamaño máximo 2000 jugadas)
-    rehacer = Pila(2000)
+    rehacer = Lista()
 
     #Tabla hash para las posibilidades de cada celda
     posibilidades = {
