@@ -1,6 +1,7 @@
 import os
 from tkinter import messagebox, filedialog
 from modelo.modVistaInicial import ModVistaInicial
+from vista.vistaMatriz import VistaMatriz
 
 class CtlVistaInicial:
     def __init__(self, vista, matrizJuego, deshacer, rehacer, jugadas, posibilidades):
@@ -22,7 +23,10 @@ class CtlVistaInicial:
         if self.archivo_seleccionado:
             self.modelo.llenar_matriz(self.archivo_seleccionado)
             self.modelo.borrar_posibilidades_posiciones_llenas()  # Llamar a la nueva función
-            self.vista.mostrar_mensaje("Éxito", "Archivo cargado correctamente.")
             self.vista.root.destroy()
+            # Crear la vista matriz
+            VistaMatriz(self.modelo.matrizJuego, self.modelo.deshacer, 
+                       self.modelo.rehacer, self.modelo.jugadas, 
+                       self.modelo.posibilidades)
         else:
             messagebox.showwarning("Advertencia", "Debe seleccionar un archivo primero.")

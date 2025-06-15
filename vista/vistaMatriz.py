@@ -1,0 +1,188 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
+
+class VistaMatriz:
+    def __init__(self, matrizJuego, deshacer, rehacer, jugadas, posibilidades):
+        self.matrizJuego = matrizJuego
+        self.root = tk.Tk()
+        self.root.title("Sudoku - Juego")
+        self.root.geometry("1200x700")
+        self.root.resizable(False, False)
+        self.root.configure(bg='#f0f0f0')
+
+        # Frame principal que contendrá todo
+        self.frame_principal = tk.Frame(self.root, bg='#f0f0f0')
+        self.frame_principal.pack(expand=True, fill='both', padx=15, pady=15)
+
+        # Frame para el grid del Sudoku (izquierda, más grande)
+        self.frame_sudoku = tk.Frame(self.frame_principal, bg='#f0f0f0', width=900)
+        self.frame_sudoku.pack(side=tk.LEFT, padx=15)
+
+        # Frame para controles y listados (derecha, más estrecho)
+        self.frame_derecho = tk.Frame(self.frame_principal, bg='#f0f0f0', width=250)
+        self.frame_derecho.pack(side=tk.LEFT, fill='both', expand=True, padx=15)
+
+        # Crear el grid del Sudoku
+        self.celdas = {}
+        self.crear_grid_sudoku()
+
+        # Frame para los botones de control
+        self.crear_controles()
+
+        # Frame para los listados
+        self.crear_listados()
+
+        # Inicializar valores y bloquear celdas necesarias
+        self.inicializar_celdas()
+
+    def validar_entrada(self, valor_completo):
+        """Valida que solo se ingresen números del 1-9 (un solo dígito) o esté vacío"""
+        # Solo permite: vacío, o un solo dígito del 1 al 9
+        if valor_completo == '':
+            return True
+        if len(valor_completo) == 1 and valor_completo in '123456789':
+            return True
+        return False
+
+    def crear_grid_sudoku(self):
+        # Registrar la función de validación
+        vcmd = (self.root.register(self.validar_entrada), '%P')
+        
+        # Crear marco exterior para el Sudoku
+        marco_sudoku = tk.Frame(self.frame_sudoku, bg='black', bd=2)  # Borde más delgado
+        marco_sudoku.pack(expand=True, padx=5, pady=5)  # Menos padding exterior
+        
+        for bloque_i in range(3):
+            for bloque_j in range(3):
+                frame_bloque = tk.Frame(marco_sudoku, bg='black', pady=1, padx=1)  # Padding reducido
+                frame_bloque.grid(row=bloque_i, column=bloque_j, padx=2, pady=2)  # Espaciado reducido
+
+                for i in range(3):
+                    for j in range(3):
+                        fila = bloque_i * 3 + i
+                        columna = bloque_j * 3 + j
+
+                        frame_celda = tk.Frame(frame_bloque, bg='black')
+                        frame_celda.grid(row=i, column=j, padx=2, pady=2)  # Espaciado reducido
+
+                        # Usar Entry en lugar de Combobox para control total de colores
+                        celda = tk.Entry(frame_celda,
+                                       width=2,
+                                       justify='center',
+                                       font=('Arial Black', 24, 'bold'),  # Fuente más pequeña
+                                       bg='#87CEEB',  # Fondo azul para celdas editables
+                                       fg='#000000',  # Texto negro para números del usuario
+                                       relief='solid',
+                                       bd=2,
+                                       validate='key',
+                                       validatecommand=vcmd,
+                                       highlightthickness=2,
+                                       highlightcolor='#FF6600',  # Naranja al hacer focus
+                                       highlightbackground='#CCCCCC')
+                        celda.pack(padx=3, pady=3)  # Padding más pequeño
+                        
+                        self.celdas[(fila, columna)] = celda
+
+    def crear_controles(self):
+        frame_controles = tk.Frame(self.frame_derecho, bg='#f0f0f0')
+        frame_controles.pack(fill='x', pady=(0, 5))
+
+        button_style = {'font': ('Arial', 12),
+                       'width': 8,
+                       'height': 1,
+                       'bg': '#0078D7',
+                       'fg': 'white',
+                       'relief': 'raised',
+                       'bd': 2}
+
+        self.btn_deshacer = tk.Button(frame_controles, 
+                                    text="Deshacer", 
+                                    **button_style)
+        self.btn_deshacer.pack(side=tk.LEFT, padx=5)
+
+        self.btn_rehacer = tk.Button(frame_controles, 
+                                   text="Rehacer", 
+                                   **button_style)
+        self.btn_rehacer.pack(side=tk.LEFT, padx=5)
+
+        # Botón de sugerencia con estilo diferente
+        suggestion_style = {'font': ('Arial', 12, 'bold'),
+                           'width': 10,
+                           'height': 1,
+                           'bg': '#28A745',  # Verde
+                           'fg': 'white',
+                           'relief': 'raised',
+                           'bd': 2}
+
+        self.btn_sugerencia = tk.Button(frame_controles, 
+                                      text="Sugerencia", 
+                                      **suggestion_style)
+        self.btn_sugerencia.pack(side=tk.LEFT, padx=5)
+
+    def crear_listados(self):
+        frame_todos_listados = tk.Frame(self.frame_derecho, bg='#f0f0f0')
+        frame_todos_listados.pack(fill='both', expand=True)
+
+        listados = ["Jugadas", "Deshacer", "Rehacer", "Posibilidades"]
+        
+        for titulo in listados:
+            frame = tk.LabelFrame(frame_todos_listados, 
+                                text=titulo,
+                                bg='#f0f0f0',
+                                font=('Arial', 8, 'bold'))
+            frame.pack(fill='both', expand=True, pady=0)
+
+            scrollbar = tk.Scrollbar(frame)
+            scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+            listbox = tk.Listbox(frame,
+                               font=('Courier', 7),
+                               bg='white',
+                               selectmode='browse',
+                               relief='sunken',
+                               bd=1,
+                               height=1,
+                               yscrollcommand=scrollbar.set)
+            listbox.pack(fill='both', expand=True, padx=1, pady=0)
+
+            scrollbar.config(command=listbox.yview)
+            setattr(self, f"listbox_{titulo.lower()}", listbox)
+
+    def bloquear_celda(self, fila, columna):
+        """Bloquea una celda y usa el color por defecto del sistema con texto negro"""
+        celda = self.celdas[(fila, columna)]
+        celda.config(state="readonly",
+                    bg='SystemButtonFace',  # Color por defecto del sistema
+                    fg='#000000',  # Texto negro
+                    relief='sunken',  # Estilo hundido para diferenciarlo
+                    bd=1,
+                    highlightthickness=0)  # Sin highlight cuando está bloqueada
+
+    def inicializar_celdas(self):
+        """Inicializa los valores y bloquea las celdas que vienen con valor inicial"""
+        for i in range(9):
+            for j in range(9):
+                valor = self.matrizJuego[i][j]
+                if valor != 0:
+                    celda = self.celdas[(i, j)]
+                    celda.insert(0, str(valor))  # Insertar el valor
+                    self.bloquear_celda(i, j)
+
+    def obtener_valor(self, fila, columna):
+        """Obtiene el valor de una celda"""
+        valor = self.celdas[(fila, columna)].get().strip()
+        return int(valor) if valor.isdigit() else 0
+
+    def establecer_valor(self, fila, columna, valor):
+        """Establece el valor de una celda si no está bloqueada"""
+        celda = self.celdas[(fila, columna)]
+        if celda['state'] != 'readonly':
+            celda.delete(0, tk.END)
+            if valor != 0:
+                celda.insert(0, str(valor))
+
+    def mostrar_mensaje(self, titulo, mensaje):
+        messagebox.showinfo(titulo, mensaje)
+
+    def iniciar(self):
+        self.root.mainloop()
