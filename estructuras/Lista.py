@@ -33,5 +33,6 @@ class Lista:
     def display(self):
         x = self.head
         while x is not None:
-            print(f"{x} -> {x.get_key()}")
+            key = x.get_key()
+            print(f"f{key.get_linea()} c{key.get_columna()}  {key.get_valor_anterior()}-> {key.get_valor_nuevo()} ({key.get_tipo()})")
             x = x.get_next()
