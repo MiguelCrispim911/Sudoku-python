@@ -51,3 +51,12 @@ class Lista:
         key = Key(linea, columna, valor_anterior, valor_nuevo)
         key.set_tipo(tipo)
         return key
+    
+    def format_key_display(self, key):
+        """Formats a Key object into the display string format: F1, C3 valorAnterior->valorNuevo (tipo)"""
+        fila = key.get_linea() + 1  # Adding 1 for 1-based display
+        columna = key.get_columna() + 1
+        anterior = key.get_valor_anterior()
+        nuevo = key.get_valor_nuevo()
+        tipo = key.get_tipo()
+        return f"F{fila}, C{columna} {anterior}->{nuevo} ({tipo})"

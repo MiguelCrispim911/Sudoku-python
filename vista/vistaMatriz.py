@@ -1,9 +1,16 @@
+
 import tkinter as tk
 from tkinter import ttk, messagebox
+from modelo.modVistaMatriz import ModVistaMatriz
+from controlador.ctlVistaMatriz import CtlVistaMatriz
 
 class VistaMatriz:
     def __init__(self, matrizJuego, deshacer, rehacer, jugadas, posibilidades):
         self.matrizJuego = matrizJuego
+        
+        # Crear el modelo internamente
+        self.modelo = ModVistaMatriz(matrizJuego, deshacer, rehacer, jugadas, posibilidades)
+        
         self.root = tk.Tk()
         self.root.title("Sudoku - Juego")
         self.root.geometry("1200x700")
@@ -34,6 +41,17 @@ class VistaMatriz:
 
         # Inicializar valores y bloquear celdas necesarias
         self.inicializar_celdas()
+        
+        # Crear el controlador después de tener todo configurado
+        self.controlador = CtlVistaMatriz(self, self.modelo)
+        
+        # Conectar los botones
+        self.conectar_botones()
+
+    def conectar_botones(self):
+        """Conecta los botones con sus funciones del controlador"""
+        self.btn_deshacer.config(command=self.controlador.deshacer_jugada)
+        self.btn_rehacer.config(command=self.controlador.rehacer_jugada)
 
     def validar_entrada(self, valor_completo):
         """Valida que solo se ingresen números del 1-9 (un solo dígito) o esté vacío"""
@@ -183,6 +201,43 @@ class VistaMatriz:
 
     def mostrar_mensaje(self, titulo, mensaje):
         messagebox.showinfo(titulo, mensaje)
+
+    def actualizar_listados(self, key):
+        """Actualiza los listboxes con la nueva jugada"""
+        if key:
+            # Formatear el texto de la jugada (L en lugar de F)
+            texto = f"L{key.get_linea() + 1} C{key.get_columna() + 1} {key.get_valor_anterior()}->{key.get_valor_nuevo()} ({key.get_tipo()})"
+            
+            # Insertar al inicio de la lista de jugadas
+            self.listbox_jugadas.insert(0, texto)
+            
+            # Insertar al inicio de la lista de deshacer
+            self.listbox_deshacer.insert(0, texto)
+            
+            # Limpiar la lista de rehacer ya que se hizo una nueva jugada
+            self.listbox_rehacer.delete(0, tk.END)
+
+    def actualizar_listados_deshacer_rehacer(self):
+        """Actualiza los listados de deshacer y rehacer después de operaciones"""
+        # Limpiar los listboxes
+        self.listbox_deshacer.delete(0, tk.END)
+        self.listbox_rehacer.delete(0, tk.END)
+        
+        # Actualizar listbox de deshacer
+        nodo = self.modelo.deshacer.get_head()
+        while nodo is not None:
+            key = nodo.get_key()
+            texto = f"L{key.get_linea() + 1} C{key.get_columna() + 1} {key.get_valor_anterior()}->{key.get_valor_nuevo()} ({key.get_tipo()})"
+            self.listbox_deshacer.insert(tk.END, texto)
+            nodo = nodo.get_next()
+        
+        # Actualizar listbox de rehacer
+        nodo = self.modelo.rehacer.get_head()
+        while nodo is not None:
+            key = nodo.get_key()
+            texto = f"L{key.get_linea() + 1} C{key.get_columna() + 1} {key.get_valor_anterior()}->{key.get_valor_nuevo()} ({key.get_tipo()})"
+            self.listbox_rehacer.insert(tk.END, texto)
+            nodo = nodo.get_next()
 
     def iniciar(self):
         self.root.mainloop()

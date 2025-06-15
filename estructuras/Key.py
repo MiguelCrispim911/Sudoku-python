@@ -1,9 +1,9 @@
 class Key:
     def __init__(self, linea, columna, valor_anterior, valor_nuevo):
-        self.linea = 0
-        self.columna = 0
-        self.valor_anterior = 0
-        self.valor_nuevo = 0
+        self.linea = linea
+        self.columna = columna
+        self.valor_anterior = valor_anterior
+        self.valor_nuevo = valor_nuevo
         self.tipo = ""
     
     def get_linea(self):
@@ -29,7 +29,7 @@ class Key:
     
     def set_valor_nuevo(self, valor_nuevo):
         self.valor_nuevo = valor_nuevo
-    
+
     def get_tipo(self):
         return self.tipo
     
