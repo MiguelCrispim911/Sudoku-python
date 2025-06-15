@@ -1,4 +1,3 @@
-
 import tkinter as tk
 from tkinter import ttk, messagebox
 from modelo.modVistaMatriz import ModVistaMatriz
@@ -10,6 +9,10 @@ class VistaMatriz:
         
         # Crear el modelo internamente
         self.modelo = ModVistaMatriz(matrizJuego, deshacer, rehacer, jugadas, posibilidades)
+        
+        # Variable para mantener la celda seleccionada actual
+        self.celda_seleccionada = None
+        self.celda_seleccionada_pos = None  # (fila, columna)
         
         self.root = tk.Tk()
         self.root.title("Sudoku - Juego")
@@ -81,9 +84,7 @@ class VistaMatriz:
                         columna = bloque_j * 3 + j
 
                         frame_celda = tk.Frame(frame_bloque, bg='black')
-                        frame_celda.grid(row=i, column=j, padx=2, pady=2)  # Espaciado reducido
-
-                        # Usar Entry en lugar de Combobox para control total de colores
+                        frame_celda.grid(row=i, column=j, padx=2, pady=2)  # Espaciado reducido                        # Usar Entry en lugar de Combobox para control total de colores
                         celda = tk.Entry(frame_celda,
                                        width=2,
                                        justify='center',
@@ -98,6 +99,11 @@ class VistaMatriz:
                                        highlightcolor='#FF6600',  # Naranja al hacer focus
                                        highlightbackground='#CCCCCC')
                         celda.pack(padx=3, pady=3)  # Padding más pequeño
+                        
+                        # Agregar eventos de focus y click
+                        celda.bind('<FocusIn>', lambda e, f=fila, c=columna: self.on_celda_focus(e, f, c))
+                        celda.bind('<Button-1>', lambda e, f=fila, c=columna: self.on_celda_focus(e, f, c))
+                        celda.bind('<FocusOut>', self.on_celda_focus_out)
                         
                         self.celdas[(fila, columna)] = celda
 
@@ -117,24 +123,28 @@ class VistaMatriz:
                                     text="Deshacer", 
                                     **button_style)
         self.btn_deshacer.pack(side=tk.LEFT, padx=5)
-
+        
         self.btn_rehacer = tk.Button(frame_controles, 
                                    text="Rehacer", 
                                    **button_style)
         self.btn_rehacer.pack(side=tk.LEFT, padx=5)
-
+        
         # Botón de sugerencia con estilo diferente
-        suggestion_style = {'font': ('Arial', 12, 'bold'),
-                           'width': 10,
-                           'height': 1,
-                           'bg': '#28A745',  # Verde
-                           'fg': 'white',
-                           'relief': 'raised',
-                           'bd': 2}
-
+        suggestion_style = {
+            'font': ('Arial', 12, 'bold'),
+            'width': 10,
+            'height': 1,
+            'bg': '#28A745',  # Verde
+            'fg': 'white',
+            'relief': 'raised',
+            'state': 'disabled',  # Inicialmente deshabilitado
+            'bd': 2
+        }
+        
         self.btn_sugerencia = tk.Button(frame_controles, 
                                       text="Sugerencia", 
                                       **suggestion_style)
+        self.btn_sugerencia.config(state='disabled')  # Asegurar que está deshabilitado
         self.btn_sugerencia.pack(side=tk.LEFT, padx=5)
 
     def crear_listados(self):
@@ -238,6 +248,26 @@ class VistaMatriz:
             texto = f"L{key.get_linea() + 1} C{key.get_columna() + 1} {key.get_valor_anterior()}->{key.get_valor_nuevo()} ({key.get_tipo()})"
             self.listbox_rehacer.insert(tk.END, texto)
             nodo = nodo.get_next()
+
+    def on_celda_focus(self, event, fila, columna):
+        """Maneja el evento cuando una celda recibe el focus"""
+        celda = event.widget
+        # Primero desactivar el botón
+        self.btn_sugerencia.config(state='disabled')
+        # Solo activar si la celda no está bloqueada
+        if celda['state'] != 'readonly':
+            self.celda_seleccionada = celda
+            self.celda_seleccionada_pos = (fila, columna)
+            self.btn_sugerencia.config(state='normal')
+        else:
+            self.celda_seleccionada = None
+            self.celda_seleccionada_pos = None
+
+    def on_celda_focus_out(self, event):
+        """Maneja el evento cuando una celda pierde el focus"""
+        self.celda_seleccionada = None
+        self.celda_seleccionada_pos = None
+        self.btn_sugerencia.config(state='disabled')
 
     def iniciar(self):
         self.root.mainloop()
