@@ -1,4 +1,3 @@
-# conjunto de metodos para interactuar con la matriz del juego
 class Matriz:
     def __init__(self, matrizJuego):
         self.matrizJuego = matrizJuego
@@ -14,39 +13,6 @@ class Matriz:
         Establece el valor en la posición (fila, columna) de la matriz.
         """
         self.matrizJuego[fila][columna] = valor
-
-    def get_linea(self, fila):
-        """
-        Obtiene la fila completa de la matriz.
-        """
-        return self.matrizJuego[fila]
-    
-    def get_columna(self, columna):
-        """Obtiene la columna completa de la matriz.
-        """
-        return [self.matrizJuego[i][columna] for i in range(9)] 
-
-    def get_subcuadro(self, fila, columna):
-        """
-        Obtiene el subcuadro 3x3 que contiene la posición (fila, columna).
-        """
-        sub_fila = (fila // 3) * 3
-        sub_columna = (columna // 3) * 3
-        return [self.matrizJuego[i][sub_columna:sub_columna + 3] for i in range(sub_fila, sub_fila + 3)]
-
-    def es_posicion_llena(self, fila, columna):
-        """
-        Verifica si la posición (fila, columna) está llena (no es 0).
-        """
-        return self.matrizJuego[fila][columna] != 0
-
-    def limpiar_matriz(self):
-        """
-        Limpia la matriz estableciendo todos los valores a 0.
-        """
-        for i in range(9):
-            for j in range(9):
-                self.matrizJuego[i][j] = 0
 
     def jugada_valida(self, fila, columna, valor):
         """
