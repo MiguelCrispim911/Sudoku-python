@@ -13,9 +13,16 @@ if __name__ == "__main__":
     # Lista doblemente enlazada para jugadas
     jugadas = Lista()
 
-    # Pila para rehacer (tamaño máximo 81 - número total de celdas en el Sudoku)
-    rehacer = Pila(81)
+    # Pila para rehacer (tamaño máximo 2000 jugadas)
+    rehacer = Pila(2000)
+
+    #Tabla hash para las posibilidades de cada celda
+    posibilidades = {
+        (fila, col): {1, 2, 3, 4, 5, 6, 7, 8, 9}
+        for fila in range(9)
+        for col in range(9)
+    }
 
     # Iniciar la vista inicial
-    vista = VistaInicial(matrizJuego, deshacer, rehacer, jugadas)
+    vista = VistaInicial(matrizJuego, deshacer, rehacer, jugadas, posibilidades)
     vista.iniciar()

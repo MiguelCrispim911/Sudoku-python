@@ -3,14 +3,14 @@ from tkinter import filedialog, messagebox
 from controlador.ctlVistaInicial import CtlVistaInicial
 
 class VistaInicial:
-    def __init__(self, matrizJuego, deshacer, rehacer, jugadas):
+    def __init__(self, matrizJuego, deshacer, rehacer, jugadas, posibilidades):
         self.root = tk.Tk()
         self.root.title("Sudoku - Cargar Juego")
         self.root.geometry("600x400")
         self.root.resizable(False, False)
 
         # Crear el controlador
-        self.controlador = CtlVistaInicial(self, matrizJuego, deshacer, rehacer, jugadas)
+        self.controlador = CtlVistaInicial(self, matrizJuego, deshacer, rehacer, jugadas, posibilidades)
 
         # Título
         self.lblTitulo = tk.Label(self.root, text="SUDOKU", font=("Tahoma", 36, "bold"), fg="#464646")
