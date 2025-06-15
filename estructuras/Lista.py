@@ -32,12 +32,7 @@ class Lista:
         else:
             self.head = x.get_next()
     
-    def display(self):
-        x = self.head
-        while x is not None:
-            key = x.get_key()
-            print(f"f{key.get_linea()} c{key.get_columna()}  {key.get_valor_anterior()}-> {key.get_valor_nuevo()} ({key.get_tipo()})")
-            x = x.get_next()
+
 
     def delete_todos_nodos(self):
         x = self.head

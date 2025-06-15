@@ -1,3 +1,6 @@
+from estructuras.Key import Key
+from estructuras.Nodo import Nodo
+
 class CtlVistaMatriz:
     def __init__(self, vista, modelo):
         self.vista = vista
@@ -71,7 +74,19 @@ class CtlVistaMatriz:
         self.modelo.deshacer.delete_nodo(ultimo_nodo)
         self.modelo.rehacer.insert(ultimo_nodo)
         
-        # Actualizar listados visuales
+        # Crear un Key para registrar la acción de deshacer en jugadas
+        key_deshacer = Key(fila, columna, key.get_valor_nuevo(), valor_anterior)
+        key_deshacer.set_tipo("deshacer")
+        
+        # Agregar SOLO a la lista de jugadas (no tocar deshacer/rehacer para esto)
+        nodo_jugadas = Nodo(key_deshacer)
+        self.modelo.jugadas.insert(nodo_jugadas)
+        
+        # Actualizar SOLO el listado de jugadas con la acción de deshacer
+        texto = f"L{fila + 1} C{columna + 1} {key.get_valor_nuevo()}->{valor_anterior} (deshacer)"
+        self.vista.listbox_jugadas.insert(0, texto)
+        
+        # Actualizar listados de deshacer y rehacer
         self.vista.actualizar_listados_deshacer_rehacer()
 
     def rehacer_jugada(self):
@@ -98,5 +113,17 @@ class CtlVistaMatriz:
         self.modelo.rehacer.delete_nodo(ultimo_nodo)
         self.modelo.deshacer.insert(ultimo_nodo)
         
-        # Actualizar listados visuales
+        # Crear un Key para registrar la acción de rehacer en jugadas
+        key_rehacer = Key(fila, columna, key.get_valor_anterior(), valor_nuevo)
+        key_rehacer.set_tipo("rehacer")
+        
+        # Agregar SOLO a la lista de jugadas (no tocar deshacer/rehacer para esto)
+        nodo_jugadas = Nodo(key_rehacer)
+        self.modelo.jugadas.insert(nodo_jugadas)
+        
+        # Actualizar SOLO el listado de jugadas con la acción de rehacer
+        texto = f"L{fila + 1} C{columna + 1} {key.get_valor_anterior()}->{valor_nuevo} (rehacer)"
+        self.vista.listbox_jugadas.insert(0, texto)
+        
+        # Actualizar listados de deshacer y rehacer
         self.vista.actualizar_listados_deshacer_rehacer()
