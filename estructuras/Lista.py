@@ -1,3 +1,5 @@
+from estructuras.Key import Key
+
 class Lista:
     def __init__(self):
         self.head = None
@@ -22,7 +24,7 @@ class Lista:
          return x
     
     
-    def delete(self, x):
+    def delete_nodo(self, x):
         if x.get_next() is not None:
             x.get_next().set_prev(x.get_prev())
         if x.get_prev() is not None:
@@ -36,3 +38,16 @@ class Lista:
             key = x.get_key()
             print(f"f{key.get_linea()} c{key.get_columna()}  {key.get_valor_anterior()}-> {key.get_valor_nuevo()} ({key.get_tipo()})")
             x = x.get_next()
+
+    def delete_todos_nodos(self):
+        x = self.head
+        while x is not None:
+            next_node = x.get_next()
+            del x
+            x = next_node
+        self.head = None
+    
+    def crear_key_string(self, linea, columna, valor_anterior, valor_nuevo, tipo):
+        key = Key(linea, columna, valor_anterior, valor_nuevo)
+        key.set_tipo(tipo)
+        return key
