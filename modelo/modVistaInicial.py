@@ -6,6 +6,8 @@ class ModVistaInicial:
         self.deshacer = deshacer
         self.rehacer = rehacer
         self.jugadas = jugadas
+        # Inicializar el diccionario de posibilidades para cada celda
+        self.posibilidades = {(i, j): list(range(1, 10)) for i in range(9) for j in range(9)}
 
     def validar_archivo_txt(self, archivo):
         if not os.path.isfile(archivo):
@@ -24,6 +26,9 @@ class ModVistaInicial:
         return True, "Archivo válido."
 
     def llenar_matriz(self, archivo):
+        """
+        Llena matrizJuego con los datos del archivo.
+        """
         with open(archivo, "r", encoding="utf-8") as f:
             for fila, linea in enumerate(f):
                 for col, caracter in enumerate(linea.strip()):
@@ -31,3 +36,14 @@ class ModVistaInicial:
                         self.matrizJuego[fila][col] = 0
                     else:
                         self.matrizJuego[fila][col] = int(caracter)
+    
+    def borrar_posibilidades_posiciones_llenas(self):
+        """
+        Borra sugestiones para posiciones que estaran bloqueadas!!!
+        """
+        for i in range(9):
+            for j in range(9):
+                if self.matrizJuego[i][j] != 0:  
+                    if (i, j) in self.posibilidades:
+                        del self.posibilidades[(i, j)]  # Eliminar la entrada del diccionario
+

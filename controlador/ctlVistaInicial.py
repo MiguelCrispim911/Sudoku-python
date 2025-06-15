@@ -21,6 +21,7 @@ class CtlVistaInicial:
     def confirmar_seleccion(self):
         if self.archivo_seleccionado:
             self.modelo.llenar_matriz(self.archivo_seleccionado)
+            self.modelo.borrar_posibilidades_posiciones_llenas()  # Llamar a la nueva función
             self.vista.mostrar_mensaje("Éxito", "Archivo cargado correctamente.")
             self.vista.root.destroy()
         else:
