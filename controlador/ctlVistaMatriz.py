@@ -96,7 +96,10 @@ class CtlVistaMatriz:
         
         # Actualizar la vista
         self.vista.establecer_valor(fila, columna, valor_anterior)
+
+        # Actualizar las posibilidades
         
+        self.vista.actualizar_posibilidades()
         # Mover de deshacer a rehacer
         self.modelo.mover_deshacer_a_rehacer(ultimo_nodo)
         
@@ -131,7 +134,8 @@ class CtlVistaMatriz:
         
         # Actualizar la vista
         self.vista.establecer_valor(fila, columna, valor_nuevo)
-        
+        # Actualizar las posibilidades
+        self.vista.actualizar_posibilidades()
         # Mover de rehacer a deshacer
         self.modelo.mover_rehacer_a_deshacer(ultimo_nodo)
         

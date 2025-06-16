@@ -47,9 +47,23 @@ class VistaMatriz:
         
         # Crear el controlador después de tener todo configurado
         self.controlador = CtlVistaMatriz(self, self.modelo)
-        
+
         # Conectar los botones
         self.conectar_botones()
+        
+        # Inicializar posibilidades después de que todo esté creado
+        self.root.after_idle(self.inicializar_posibilidades_vista)
+
+    def inicializar_posibilidades_vista(self):
+        """Inicializa las posibilidades en la vista al comenzar el juego"""
+        posibilidades = self.modelo.obtener_posibilidades_formateadas()
+        
+        # Limpiar el listbox de posibilidades
+        self.listbox_posibilidades.delete(0, tk.END)
+        
+        # Agregar cada posibilidad al listbox
+        for posibilidad in posibilidades:
+            self.listbox_posibilidades.insert(tk.END, posibilidad)
 
     def conectar_botones(self):
         """Conecta los botones con sus funciones del controlador"""
@@ -226,6 +240,9 @@ class VistaMatriz:
             
             # Limpiar la lista de rehacer ya que se hizo una nueva jugada
             self.listbox_rehacer.delete(0, tk.END)
+            
+            # Actualizar posibilidades
+            self.actualizar_posibilidades()
 
     def actualizar_listados_deshacer_rehacer(self):
         """Actualiza los listados de deshacer y rehacer después de operaciones"""
@@ -268,6 +285,17 @@ class VistaMatriz:
         self.celda_seleccionada = None
         self.celda_seleccionada_pos = None
         self.btn_sugerencia.config(state='disabled')
+    
+    def actualizar_posibilidades(self):
+        """Actualiza el listbox de posibilidades"""
+        posibilidades = self.modelo.obtener_posibilidades_formateadas()
+        
+        # Limpiar el listbox de posibilidades
+        self.listbox_posibilidades.delete(0, tk.END)
+        
+        # Agregar cada posibilidad al listbox
+        for posibilidad in posibilidades:
+            self.listbox_posibilidades.insert(tk.END, posibilidad)
 
     def iniciar(self):
         self.root.mainloop()

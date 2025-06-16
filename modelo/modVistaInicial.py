@@ -1,4 +1,5 @@
 import os
+from estructuras.Diccionario import Diccionario  # AGREGAR ESTA LÍNEA
 
 class ModVistaInicial:
 
@@ -8,6 +9,9 @@ class ModVistaInicial:
         self.rehacer = rehacer
         self.jugadas = jugadas
         self.posibilidades = posibilidades
+        
+        # AGREGAR ESTA LÍNEA:
+        self.diccionario = Diccionario(posibilidades)
 
     def validar_archivo_txt(self, archivo):
         if not os.path.isfile(archivo):
@@ -36,14 +40,3 @@ class ModVistaInicial:
                         self.matrizJuego[fila][col] = 0
                     else:
                         self.matrizJuego[fila][col] = int(caracter)
-    
-    def borrar_posibilidades_posiciones_llenas(self):
-        """
-        Borra sugestiones para posiciones que estaran bloqueadas!!!
-        """
-        for i in range(9):
-            for j in range(9):
-                if self.matrizJuego[i][j] != 0:  
-                    if (i, j) in self.posibilidades:
-                        del self.posibilidades[(i, j)]  # Eliminar la entrada del diccionario
-

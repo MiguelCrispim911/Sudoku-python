@@ -22,7 +22,7 @@ class CtlVistaInicial:
     def confirmar_seleccion(self):
         if self.archivo_seleccionado:
             self.modelo.llenar_matriz(self.archivo_seleccionado)
-            self.modelo.borrar_posibilidades_posiciones_llenas()  # Llamar a la nueva función
+            self.modelo.diccionario.inicializar_posibilidades_desde_tablero(self.modelo.matrizJuego)
             self.vista.root.destroy()
             # Crear la vista matriz
             VistaMatriz(self.modelo.matrizJuego, self.modelo.deshacer, 
