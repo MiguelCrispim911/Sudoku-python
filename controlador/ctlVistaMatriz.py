@@ -160,3 +160,51 @@ class CtlVistaMatriz:
         
         # Actualizar listados de deshacer y rehacer
         self.vista.actualizar_listados_deshacer_rehacer()
+
+    def dar_sugerencia(self):
+        """Proporciona una sugerencia para la celda seleccionada"""
+        # Verificar si hay una celda seleccionada
+        if not self.vista.celda_seleccionada_pos:
+            self.vista.mostrar_mensaje("Sugerencia", "No hay celda seleccionada")
+            return
+        
+        fila, columna = self.vista.celda_seleccionada_pos
+        
+        # Obtener sugerencia del modelo
+        resultado_sugerencia = self.modelo.obtener_sugerencia(fila, columna)
+        
+        if not resultado_sugerencia['exito']:
+            # Mostrar mensaje de error
+            self.vista.mostrar_mensaje("Sugerencia", resultado_sugerencia['mensaje'])
+            return
+        
+        # Si la sugerencia fue exitosa, aplicarla
+        valor_sugerido = resultado_sugerencia['valor']
+        valor_anterior = self.modelo.get_valor(fila, columna)  # Debería ser 0
+        
+        # Procesar la sugerencia como una entrada normal
+        resultado = self.procesar_entrada(fila, columna, valor_anterior, valor_sugerido)
+        
+        if resultado['exito']:
+            # Actualizar la vista con el valor sugerido
+            self.vista.establecer_valor(fila, columna, valor_sugerido)
+            
+            # Agregar el valor a noVolverASugerir
+            self.modelo.agregar_a_no_volver_a_sugerir(fila, columna, valor_sugerido)
+            
+            # Actualizar las visualizaciones de las listas
+            self.vista.actualizar_listados(resultado['key'])
+            
+            # Cambiar el tipo de la jugada para indicar que fue una sugerencia
+            key = resultado['key']
+            key.set_tipo("sugerencia")
+            
+            # Mostrar mensaje de éxito
+            self.vista.mostrar_mensaje("Sugerencia", f"Sugerencia aplicada: {valor_sugerido}")
+            
+            # Si el juego está completo, mostrar mensaje
+            if "completado" in resultado['mensaje'].lower():
+                self.vista.mostrar_mensaje("¡Juego Completado!", resultado['mensaje'])
+        else:
+            # En caso de error (no debería ocurrir si la lógica es correcta)
+            self.vista.mostrar_mensaje("Error", f"Error al aplicar sugerencia: {resultado['mensaje']}")

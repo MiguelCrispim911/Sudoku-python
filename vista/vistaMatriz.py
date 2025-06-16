@@ -72,6 +72,7 @@ class VistaMatriz:
         """Conecta los botones con sus funciones del controlador"""
         self.btn_deshacer.config(command=self.controlador.deshacer_jugada)
         self.btn_rehacer.config(command=self.controlador.rehacer_jugada)
+        self.btn_sugerencia.config(command=self.controlador.dar_sugerencia)
 
     def validar_entrada(self, valor_completo):
         """Valida que solo se ingresen números del 1-9 (un solo dígito) o esté vacío"""

@@ -1,4 +1,4 @@
-
+import random
 from estructuras.Key import Key
 from estructuras.Nodo import Nodo
 from estructuras.Matriz import Matriz
@@ -276,3 +276,64 @@ class ModVistaMatriz:
                 resultado.append(texto)
         
         return resultado
+    
+    def obtener_sugerencia(self, fila, columna):
+        """
+        Obtiene una sugerencia aleatoria para la posición especificada.
+        
+        Args:
+            fila: fila de la celda
+            columna: columna de la celda
+        
+        Returns:
+            dict: {'exito': bool, 'valor': int, 'mensaje': str}
+        """
+        import random
+        
+        # Verificar si la celda ya está ocupada
+        if self.get_valor(fila, columna) != 0:
+            return {
+                'exito': False,
+                'valor': None,
+                'mensaje': 'La casilla ya está llena, no se puede dar sugerencia'
+            }
+        
+        # Obtener posibilidades para esta posición
+        posibilidades_celda = self.diccionario.get_posibilidades(fila, columna)
+        
+        # Obtener valores que no se deben volver a sugerir
+        no_sugerir = self.noVolverASugerir.get((fila, columna), set())
+        
+        # Calcular sugerencias disponibles (posibilidades - no_sugerir)
+        sugerencias_disponibles = posibilidades_celda - no_sugerir
+        
+        # Verificar si hay sugerencias disponibles
+        if not sugerencias_disponibles:
+            return {
+                'exito': False,
+                'valor': None,
+                'mensaje': 'No hay sugerencias disponibles para esta posición'
+            }
+        
+        # Seleccionar un valor aleatorio
+        valor_sugerido = random.choice(list(sugerencias_disponibles))
+        
+        return {
+            'exito': True,
+            'valor': valor_sugerido,
+            'mensaje': f'Sugerencia: {valor_sugerido}'
+        }
+    
+    def agregar_a_no_volver_a_sugerir(self, fila, columna, valor):
+        """
+        Agrega un valor al conjunto de noVolverASugerir para la posición especificada.
+        
+        Args:
+            fila: fila de la celda
+            columna: columna de la celda
+            valor: valor a agregar
+        """
+        if (fila, columna) not in self.noVolverASugerir:
+            self.noVolverASugerir[(fila, columna)] = set()
+        
+        self.noVolverASugerir[(fila, columna)].add(valor)
