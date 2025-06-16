@@ -3,12 +3,13 @@ from estructuras.Diccionario import Diccionario  # AGREGAR ESTA LÍNEA
 
 class ModVistaInicial:
 
-    def __init__(self, matrizJuego, deshacer, rehacer, jugadas, posibilidades):
+    def __init__(self, matrizJuego, deshacer, rehacer, jugadas, posibilidades, noVolverASugerir):
         self.matrizJuego = matrizJuego
         self.deshacer = deshacer
         self.rehacer = rehacer
         self.jugadas = jugadas
         self.posibilidades = posibilidades
+        self.noVolverASugerir = noVolverASugerir
         
         # AGREGAR ESTA LÍNEA:
         self.diccionario = Diccionario(posibilidades)

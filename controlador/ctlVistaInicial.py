@@ -4,9 +4,9 @@ from modelo.modVistaInicial import ModVistaInicial
 from vista.vistaMatriz import VistaMatriz
 
 class CtlVistaInicial:
-    def __init__(self, vista, matrizJuego, deshacer, rehacer, jugadas, posibilidades):
+    def __init__(self, vista, matrizJuego, deshacer, rehacer, jugadas, posibilidades, noVolverASugerir):
         self.vista = vista
-        self.modelo = ModVistaInicial(matrizJuego, deshacer, rehacer, jugadas, posibilidades)
+        self.modelo = ModVistaInicial(matrizJuego, deshacer, rehacer, jugadas, posibilidades,noVolverASugerir)
         self.archivo_seleccionado = None
 
     def seleccionar_archivo(self):
@@ -27,6 +27,6 @@ class CtlVistaInicial:
             # Crear la vista matriz
             VistaMatriz(self.modelo.matrizJuego, self.modelo.deshacer, 
                        self.modelo.rehacer, self.modelo.jugadas, 
-                       self.modelo.posibilidades)
+                       self.modelo.posibilidades, self.modelo.noVolverASugerir)
         else:
             messagebox.showwarning("Advertencia", "Debe seleccionar un archivo primero.")

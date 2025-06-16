@@ -4,11 +4,11 @@ from modelo.modVistaMatriz import ModVistaMatriz
 from controlador.ctlVistaMatriz import CtlVistaMatriz
 
 class VistaMatriz:
-    def __init__(self, matrizJuego, deshacer, rehacer, jugadas, posibilidades):
+    def __init__(self, matrizJuego, deshacer, rehacer, jugadas, posibilidades,noVolverASugerir):
         self.matrizJuego = matrizJuego
-        
+        self.noVolverASugerir = noVolverASugerir
         # Crear el modelo internamente
-        self.modelo = ModVistaMatriz(matrizJuego, deshacer, rehacer, jugadas, posibilidades)
+        self.modelo = ModVistaMatriz(matrizJuego, deshacer, rehacer, jugadas, posibilidades, noVolverASugerir)
         
         # Variable para mantener la celda seleccionada actual
         self.celda_seleccionada = None
@@ -64,6 +64,9 @@ class VistaMatriz:
         # Agregar cada posibilidad al listbox
         for posibilidad in posibilidades:
             self.listbox_posibilidades.insert(tk.END, posibilidad)
+        
+        # Inicializar  noVolverASugerir
+        self.actualizar_no_volver_a_sugerir()
 
     def conectar_botones(self):
         """Conecta los botones con sus funciones del controlador"""
@@ -165,7 +168,8 @@ class VistaMatriz:
         frame_todos_listados = tk.Frame(self.frame_derecho, bg='#f0f0f0')
         frame_todos_listados.pack(fill='both', expand=True)
 
-        listados = ["Jugadas", "Deshacer", "Rehacer", "Posibilidades"]
+        # MODIFICAR: Agregar "NoVolverASugerir" a la lista
+        listados = ["Jugadas", "Deshacer", "Rehacer", "Posibilidades", "NoVolverASugerir"]
         
         for titulo in listados:
             frame = tk.LabelFrame(frame_todos_listados, 
@@ -178,17 +182,19 @@ class VistaMatriz:
             scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
             listbox = tk.Listbox(frame,
-                               font=('Courier', 7),
-                               bg='white',
-                               selectmode='browse',
-                               relief='sunken',
-                               bd=1,
-                               height=1,
-                               yscrollcommand=scrollbar.set)
+                            font=('Courier', 7),
+                            bg='white',
+                            selectmode='browse',
+                            relief='sunken',
+                            bd=1,
+                            height=1,
+                            yscrollcommand=scrollbar.set)
             listbox.pack(fill='both', expand=True, padx=1, pady=0)
 
             scrollbar.config(command=listbox.yview)
-            setattr(self, f"listbox_{titulo.lower()}", listbox)
+            # MODIFICAR: Manejar el nombre especial
+            nombre_atributo = titulo.lower().replace("novolverasugerir", "no_volver_a_sugerir")
+            setattr(self, f"listbox_{nombre_atributo}", listbox)
 
     def bloquear_celda(self, fila, columna):
         """Bloquea una celda y usa el color por defecto del sistema con texto negro"""
@@ -287,15 +293,29 @@ class VistaMatriz:
         self.btn_sugerencia.config(state='disabled')
     
     def actualizar_posibilidades(self):
-        """Actualiza el listbox de posibilidades"""
+        """Actualiza el listbox de posibilidades y noVolverASugerir"""
         posibilidades = self.modelo.obtener_posibilidades_formateadas()
         
-        # Limpiar el listbox de posibilidades
+        # Limpiar el listbox de posibilidades  
         self.listbox_posibilidades.delete(0, tk.END)
         
         # Agregar cada posibilidad al listbox
         for posibilidad in posibilidades:
             self.listbox_posibilidades.insert(tk.END, posibilidad)
+        
+        # NUEVO: También actualizar noVolverASugerir
+        self.actualizar_no_volver_a_sugerir()
+
+    def actualizar_no_volver_a_sugerir(self):
+        """Actualiza el listbox de noVolverASugerir"""
+        no_sugerir_texto = self.modelo.obtener_no_volver_a_sugerir_formateadas()
+        
+        # Limpiar el listbox
+        self.listbox_no_volver_a_sugerir.delete(0, tk.END)
+        
+        # Agregar cada entrada al listbox
+        for entrada in no_sugerir_texto:
+            self.listbox_no_volver_a_sugerir.insert(tk.END, entrada)
 
     def iniciar(self):
         self.root.mainloop()

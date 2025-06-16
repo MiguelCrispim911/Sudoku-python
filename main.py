@@ -16,13 +16,21 @@ if __name__ == "__main__":
     # Pila para rehacer (tamaño máximo 2000 jugadas)
     rehacer = Lista()
 
-    #Tabla hash para las posibilidades de cada celda
+    #Diccionario Python para las posibilidades de cada celda
     posibilidades = {
         (fila, col): {1, 2, 3, 4, 5, 6, 7, 8, 9}
         for fila in range(9)
         for col in range(9)
     }
 
+    #Diccionario Python para las posibilidades de cada celda
+    noVolverASugerir = {
+        (fila, col): set() 
+        for fila in range(9)
+        for col in range(9)
+    }
+
+
     # Iniciar la vista inicial
-    vista = VistaInicial(matrizJuego, deshacer, rehacer, jugadas, posibilidades)
+    vista = VistaInicial(matrizJuego, deshacer, rehacer, jugadas, posibilidades, noVolverASugerir)
     vista.iniciar()

@@ -5,12 +5,13 @@ from estructuras.Matriz import Matriz
 from estructuras.Diccionario import Diccionario  # Importar la clase Diccionario
 
 class ModVistaMatriz:
-    def __init__(self, matrizJuego, deshacer, rehacer, jugadas, posibilidades):
+    def __init__(self, matrizJuego, deshacer, rehacer, jugadas, posibilidades,noVolverASugerir):
         self.matrizJuego = matrizJuego
         self.deshacer = deshacer
         self.rehacer = rehacer
         self.jugadas = jugadas
         self.posibilidades = posibilidades
+        self.noVolverASugerir = noVolverASugerir 
         self.matriz = Matriz(matrizJuego)  # Instancia de la clase Matriz
         
         # Crear instancia del diccionario de posibilidades
@@ -249,3 +250,29 @@ class ModVistaMatriz:
             self.agregar_posibilidades_por_valor(fila, columna, valor_anterior)
             # Eliminar valor_nuevo de las posibilidades relacionadas
             self.diccionario.eliminar_posibilidades_por_valor(fila, columna, valor_nuevo)
+
+    def obtener_no_volver_a_sugerir_formateadas(self):
+        """
+        Retorna una lista con las entradas de noVolverASugerir formateadas para mostrar en el listbox.
+        Muestra todas las llaves del diccionario, incluso si tienen valores vacíos.
+        """
+        resultado = []
+        
+        # Iterar por todas las posiciones (0,0) hasta (8,8)
+        for fila in range(9):
+            for columna in range(9):
+                llave = (fila, columna)
+                
+                # Obtener el set de valores para esta posición
+                valores_set = self.noVolverASugerir.get(llave, set())
+                
+                # Formatear la entrada
+                if valores_set:  # Si tiene valores
+                    valores_str = ','.join(map(str, sorted(valores_set)))
+                    texto = f"L{fila + 1} C{columna + 1}: [{valores_str}]"
+                else:  # Si está vacío
+                    texto = f"L{fila + 1} C{columna + 1}: []"
+                
+                resultado.append(texto)
+        
+        return resultado
