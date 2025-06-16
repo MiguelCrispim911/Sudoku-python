@@ -50,16 +50,27 @@ class ModVistaMatriz:
         # Limpiar rehacer cuando se hace una nueva jugada
         self.rehacer.delete_todos_nodos()
         
-        # Actualizar posibilidades si se agregó un valor
-        if key.get_valor_nuevo() != 0:
-            fila = key.get_linea()
-            columna = key.get_columna()
-            valor = key.get_valor_nuevo()
-            
-            # Limpiar posibilidades de la celda ocupada
+        fila = key.get_linea()
+        columna = key.get_columna()
+        valor_anterior = key.get_valor_anterior()
+        valor_nuevo = key.get_valor_nuevo()
+        
+        # Actualizar posibilidades según el tipo de jugada
+        if valor_nuevo != 0:
+            # Se agregó un valor: limpiar posibilidades de la celda y eliminar de relacionadas
             self.diccionario.set_posibilidades(fila, columna, set())
-            # Eliminar el valor de las posibilidades relacionadas
-            self.diccionario.eliminar_posibilidades_por_valor(fila, columna, valor)
+            self.diccionario.eliminar_posibilidades_por_valor(fila, columna, valor_nuevo)
+        elif valor_anterior != 0:
+            # Se borró un valor: restaurar posibilidades en la celda y en relacionadas
+            # Restaurar posibilidades para la celda que se vacía
+            posibilidades_celda = set()
+            for num in range(1, 10):
+                if self._puede_tener_valor(fila, columna, num):
+                    posibilidades_celda.add(num)
+            self.diccionario.set_posibilidades(fila, columna, posibilidades_celda)
+            
+            # Restaurar el valor borrado como posibilidad en celdas relacionadas
+            self.agregar_posibilidades_por_valor(fila, columna, valor_anterior)
     
     def obtener_ultima_jugada_deshacer(self):
         """Obtiene la última jugada que puede deshacerse"""
