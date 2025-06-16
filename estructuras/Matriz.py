@@ -38,10 +38,34 @@ class Matriz:
         return True
     
     def juego_finalizado(self):
-        """
-        Verifica si el juego ha finalizado (todas las posiciones están llenas).
-        """
+        # Primero verificar que no haya celdas vacías
         for fila in self.matrizJuego:
             if 0 in fila:
                 return False
+        
+        # Verificar filas - cada fila debe tener exactamente los números 1-9
+        for fila in range(9):
+            numeros_en_fila = set(self.matrizJuego[fila])
+            if numeros_en_fila != {1, 2, 3, 4, 5, 6, 7, 8, 9}:
+                return False
+        
+        # Verificar columnas - cada columna debe tener exactamente los números 1-9
+        for columna in range(9):
+            numeros_en_columna = set()
+            for fila in range(9):
+                numeros_en_columna.add(self.matrizJuego[fila][columna])
+            if numeros_en_columna != {1, 2, 3, 4, 5, 6, 7, 8, 9}:
+                return False
+        
+        # Verificar subcuadros 3x3 - cada subcuadro debe tener exactamente los números 1-9
+        for sub_fila_inicio in range(0, 9, 3):
+            for sub_columna_inicio in range(0, 9, 3):
+                numeros_en_subcuadro = set()
+                for fila in range(sub_fila_inicio, sub_fila_inicio + 3):
+                    for columna in range(sub_columna_inicio, sub_columna_inicio + 3):
+                        numeros_en_subcuadro.add(self.matrizJuego[fila][columna])
+                if numeros_en_subcuadro != {1, 2, 3, 4, 5, 6, 7, 8, 9}:
+                    return False
+        
+        # Si pasa todas las verificaciones, el juego está correctamente finalizado
         return True
