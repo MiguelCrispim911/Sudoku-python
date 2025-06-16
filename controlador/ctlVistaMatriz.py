@@ -90,16 +90,20 @@ class CtlVistaMatriz:
         fila = key.get_linea()
         columna = key.get_columna()
         valor_anterior = key.get_valor_anterior()
+        valor_nuevo = key.get_valor_nuevo()  # Necesitamos este también
         
         # Revertir en el modelo
         self.modelo.set_valor(fila, columna, valor_anterior)
         
+        # NUEVO: Actualizar posibilidades antes de actualizar la vista
+        self.modelo.actualizar_posibilidades_deshacer(fila, columna, valor_anterior, valor_nuevo)
+        
         # Actualizar la vista
         self.vista.establecer_valor(fila, columna, valor_anterior)
 
-        # Actualizar las posibilidades
-        
+        # Actualizar las posibilidades en la vista
         self.vista.actualizar_posibilidades()
+        
         # Mover de deshacer a rehacer
         self.modelo.mover_deshacer_a_rehacer(ultimo_nodo)
         
@@ -127,15 +131,21 @@ class CtlVistaMatriz:
         key = ultimo_nodo.get_key()
         fila = key.get_linea()
         columna = key.get_columna()
+        valor_anterior = key.get_valor_anterior()  # Necesitamos este también
         valor_nuevo = key.get_valor_nuevo()
         
         # Aplicar en el modelo
         self.modelo.set_valor(fila, columna, valor_nuevo)
         
+        # NUEVO: Actualizar posibilidades antes de actualizar la vista
+        self.modelo.actualizar_posibilidades_rehacer(fila, columna, valor_anterior, valor_nuevo)
+        
         # Actualizar la vista
         self.vista.establecer_valor(fila, columna, valor_nuevo)
-        # Actualizar las posibilidades
+        
+        # Actualizar las posibilidades en la vista
         self.vista.actualizar_posibilidades()
+        
         # Mover de rehacer a deshacer
         self.modelo.mover_rehacer_a_deshacer(ultimo_nodo)
         
